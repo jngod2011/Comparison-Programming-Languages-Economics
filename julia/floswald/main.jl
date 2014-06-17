@@ -2,11 +2,10 @@
 
 
 # julia main function
-# step through this line by line
-
-# where is your git repo?
+# execute this function
 home = ENV["HOME"]
 cd("$home/git/Comparison-Programming-Languages-Economics/julia/floswald")
+
 
 include("RBCmodule.jl")
 
@@ -17,7 +16,7 @@ show(m)
 # force compilation
 RBCmod.compute(m)
 
-# reset: set V back to zero
+# reset
 RBCmod.resetV!(m);
 
 # time
@@ -43,11 +42,24 @@ Profile.print()
 # 1) get rid of multidim array access
 # 2) take out (1-m.bbeta)
 
+
 RBCmod.resetV!(m);
 RBCmod.computeTuned(m)
 RBCmod.resetV!(m);
 Tuned = @elapsed RBCmod.computeTuned(m)
 
+# mylog and devectorizing maximum(abs)
+RBCmod.resetV!(m);
+RBCmod.computeTuned2(m)
+RBCmod.resetV!(m);
+Tuned_mylog = @elapsed RBCmod.computeTuned2(m)
+
+print((Tuned_mylog - Tuned) / Tuned)
+
+
+
 
 println("% time difference typed vs Jesus: $((withTypes - noTypes) / noTypes)")
 println("% time difference tuned vs Jesus: $((Tuned - noTypes) / noTypes)")
+println("% time difference tuned vs tuned_mylog: $((Tuned_mylog - Tuned) / Tuned)")
+println("% time difference tuned vs Jesus: $((Tuned_mylog - noTypes) / noTypes)")
